@@ -1,7 +1,7 @@
 Summary:	GNOME http client library
 Summary(pl):	Biblioteka funkcji klienta http
 Name:		libghttp
-Version:	1.0.8
+Version:	1.0.9
 Release:	1
 Epoch:		1
 License:	LGPL
