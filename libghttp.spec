@@ -1,9 +1,9 @@
 Summary:     GNOME http client library
 Name:        libghttp
-Version:     0.99
+Version:     0.99.2
 Release:     1
 Copyright:   GPL
-Group:       X11/gnome
+Group:       X11/GNOME
 Source:      ftp://ftp.gnome.org/pub/GNOME/sources/%{name}-%{version}.tar.gz
 URL:         http://www.gnome.org/
 BuildRoot:   /tmp/%{name}-%{version}-root
@@ -21,7 +21,7 @@ Libraries and includes files you can use for libghttp development
 
 %package static
 Summary:     GNOME http client static library
-Group:       X11/gnome
+Group:       X11/GNOME
 Requires:    %{name}-devel = %{version}
 
 %description static
@@ -43,23 +43,23 @@ make install DESTDIR=$RPM_BUILD_ROOT
 
 strip $RPM_BUILD_ROOT/usr/X11R6/lib/lib*so.*.*
 
-%post -p /sbin/ldconfig
+%post   -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
-%attr(755, root, root) /usr/X11R6/lib/lib*.so.*
+%attr(755,root,root) /usr/X11R6/lib/lib*.so.*.*
 
 %files devel
-%defattr(644, root, root, 755)
+%defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README
 %attr(755, root, root) /usr/X11R6/lib/lib*.so
 /usr/X11R6/include/*
 
 %files static
-%attr(644, root, root) /usr/X11R6/lib/*a
+%attr(644,root,root) /usr/X11R6/lib/*a
 
 %changelog
 * Mon Jan 04 1999 Tomasz K³oczko <kloczek@rudy.mif.pg.gda.pl>
