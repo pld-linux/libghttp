@@ -7,6 +7,7 @@ Epoch:		1
 License:	LGPL
 Group:		Libraries
 Source0:	ftp://ftp.gnome.org/pub/GNOME/sources/libghttp/1.0/%{name}-%{version}.tar.gz
+Patch0:		%{name}-ac.patch
 URL:		http://www.gnome.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -46,6 +47,7 @@ Wersja statyczna biblioteki libghttp.
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 %{__libtoolize}
