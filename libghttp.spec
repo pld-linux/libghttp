@@ -7,7 +7,7 @@ Summary(ru):	Библиотека http-клиента для GNOME
 Summary(uk):	Б╕бл╕отека http-кл╕╓нта для GNOME
 Name:		libghttp
 Version:	1.0.9
-Release:	8
+Release:	9
 Epoch:		1
 License:	LGPL
 Group:		Libraries
