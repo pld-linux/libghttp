@@ -28,7 +28,7 @@ Requires:	%{name} = %{version}
 %description devel
 Libraries and includes files you can use for libghttp development.
 
-%description -l pl devel
+%description devel -l pl
 Biblioteki i pliki nag³ówkowe potrzebne do programowania z
 wykorzystaniem libghttp.
 
@@ -41,7 +41,7 @@ Requires:	%{name}-devel = %{version}
 %description static
 GNOME http client static library.
 
-%description -l pl static
+%description static -l pl
 Wersja statyczna biblioteki libghttp.
 
 %prep
