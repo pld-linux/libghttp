@@ -1,0 +1,15 @@
+diff -Nru libghttp-1.0.9.orig/configure.in libghttp-1.0.9/configure.in
+--- libghttp-1.0.9.orig/configure.in	Tue Dec  5 20:49:14 2000
++++ libghttp-1.0.9/configure.in	Sun Jan 19 21:12:17 2003
+@@ -1,11 +1,9 @@
+ AC_INIT(ghttp.h)
+ 
+-AC_DIVERT_PUSH(AC_DIVERSION_NOTICE)
+ GHTTP_MAJOR_VERSION=1
+ GHTTP_MINOR_VERSION=0
+ GHTTP_MICRO_VERSION=9
+ GHTTP_VERSION=$GHTTP_MAJOR_VERSION.$GHTTP_MINOR_VERSION.$GHTTP_MICRO_VERSION
+-AC_DIVERT_POP()
+ 
+ AC_SUBST(GHTTP_MAJOR_VERSION)
+ AC_SUBST(GHTTP_MINOR_VERSION)
