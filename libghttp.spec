@@ -1,14 +1,16 @@
-Summary:     	GNOME http client library
+Summary:	GNOME http client library
 Summary(pl):	Biblioteka funkcji klienta http
-Name:        	libghttp
-Version:     	1.0.2
-Release:     	1
-Group:       	X11/GNOME/Libraries
-Group(pl):   	X11/GNOME/Biblioteki
-Copyright:   	GPL
-Source:      	ftp://ftp.gnome.org/pub/GNOME/sources/%{name}-%{version}.tar.gz
-URL:         	http://www.gnome.org/
+Name:		libghttp
+Version:	1.0.2
+Release:	2
+Group:		X11/GNOME/Libraries
+Group(pl):	X11/GNOME/Biblioteki
+Copyright:	GPL
+Source:		ftp://ftp.gnome.org/pub/GNOME/sources/%{name}-%{version}.tar.gz
+URL:		http://www.gnome.org/
 BuildRoot:	/tmp/%{name}-%{version}-root
+
+%define _prefix /usr/X11R6
 
 %description
 Library for making HTTP 1.1 requests.
@@ -17,11 +19,11 @@ Library for making HTTP 1.1 requests.
 Biblioteka funkcji umo¿liwiaj±cych realizacjê protoko³u HTTP 1.1
 
 %package devel
-Summary:     	GNOME http client development
+Summary:	GNOME http client development
 Summary(pl):	Biblioteki i pliki nag³owkowe libghttp
-Group:       	X11/GNOME/Development/Libraries
-Group(pl):   	X11/GNOME/Programowanie/Biblioteki
-Requires:    	%{name} = %{version}
+Group:		X11/GNOME/Development/Libraries
+Group(pl):	X11/GNOME/Programowanie/Biblioteki
+Requires:	%{name} = %{version}
 
 %description devel
 Libraries and includes files you can use for libghttp development
@@ -31,11 +33,11 @@ Biblioteki i pliki nag³owkowe potrzebne do programowania z wykorzystaniem
 libghttp
 
 %package static
-Summary:    	GNOME http client static library
+Summary:	GNOME http client static library
 Summary(pl):	Statyczna biblioteka libghttp
-Group:       	X11/GNOME/Development/Libraries
-Group(pl):   	X11/GNOME/Programowanie/Biblioteki
-Requires:    	%{name}-devel = %{version}
+Group:		X11/GNOME/Development/Libraries
+Group(pl):	X11/GNOME/Programowanie/Biblioteki
+Requires:	%{name}-devel = %{version}
 
 %description static
 GNOME http client static library.
@@ -49,7 +51,7 @@ Wersja statyczna biblioteki libghttp
 %build
 CFLAGS="$RPM_OPT_FLAGS" LDCONFIG="-s" \
 ./configure %{_target} \
-	--prefix=/usr/X11R6
+	--prefix=%{_prefix}
 make
 
 %install
@@ -57,7 +59,7 @@ rm -rf $RPM_BUILD_ROOT
 
 make install DESTDIR=$RPM_BUILD_ROOT
 
-strip $RPM_BUILD_ROOT/usr/X11R6/lib/lib*so.*.*
+strip --strip-unneeded $RPM_BUILD_ROOT%{_libdir}/lib*so.*.*
 
 gzip -9nf AUTHORS ChangeLog NEWS README
 
@@ -69,24 +71,28 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%attr(755,root,root) /usr/X11R6/lib/lib*.so.*.*
+%attr(755,root,root) %{_libdir}/lib*.so.*.*
 
 %files devel
 %defattr(644,root,root,755)
 %doc {AUTHORS,ChangeLog,NEWS,README}.gz
 
-%attr(755,root,root) /usr/X11R6/lib/lib*.so
-/usr/X11R6/include/*
+%attr(755, root, root) %{_libdir}/lib*.so
+%{_includedir}/*
 
 %files static
 %defattr(644,root,root,755)
-/usr/X11R6/lib/lib*.a
+%{_libdir}/lib*.a
 
 %changelog
+* Tue May 25 1999 Tomasz K³oczko <kloczek@rudy.mif.pg.gda.pl>
+  [1.0.2-1]
+- added using macros in spec.
+
 * Sun Mar 14 1999 Micha³ Kuratczyk <kura@pld.org.pl>
   [0.99-2]
-- added Group(pl)
-- added gzipping documentation
+- added Group(pl),
+- added gzipping documentation.
 
 * Mon Jan 04 1999 Tomasz K³oczko <kloczek@rudy.mif.pg.gda.pl>
   [0.99-1]
