@@ -8,7 +8,7 @@ Group(pl):   	X11/GNOME/Biblioteki
 Copyright:   	GPL
 Source:      	ftp://ftp.gnome.org/pub/GNOME/sources/%{name}-%{version}.tar.gz
 URL:         	http://www.gnome.org/
-BuildRoot:   	/tmp/%{name}-%{version}-root
+BuildRoot:	/tmp/%{name}-%{version}-root
 
 %description
 Library for making HTTP 1.1 requests.
