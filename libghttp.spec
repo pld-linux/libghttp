@@ -6,7 +6,7 @@ Release:	1
 Group:		X11/GNOME/Libraries
 Group(pl):	X11/GNOME/Biblioteki
 Copyright:	GPL
-Source:		ftp://ftp.gnome.org/pub/GNOME/sources/%{name}-%{version}.tar.gz
+Source:		ftp://ftp.gnome.org/pub/GNOME/stable/sources/%{name}-%{version}.tar.gz
 URL:		http://www.gnome.org/
 BuildRoot:	/tmp/%{name}-%{version}-root
 
