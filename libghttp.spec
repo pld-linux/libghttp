@@ -7,18 +7,20 @@ Summary(ru):	Библиотека HTTP-клиента для GNOME
 Summary(uk):	Б╕бл╕отека HTTP-кл╕╓нта для GNOME
 Name:		libghttp
 Version:	1.0.9
-Release:	9
+Release:	10
 Epoch:		1
 License:	LGPL
 Group:		Libraries
-Source0:	ftp://ftp.gnome.org/pub/GNOME/sources/libghttp/1.0/%{name}-%{version}.tar.gz
+Source0:	http://ftp.gnome.org/pub/gnome/sources/libghttp/1.0/%{name}-%{version}.tar.gz
 # Source0-md5:	0690e7456f9a15c635f240f3d6d5dab2
 Patch0:		%{name}-ac.patch
 Patch1:		%{name}-fixlocale.patch
+Patch2:		%{name}-ssl.patch
 URL:		http://www.gnome.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	libtool
+BuildRequires:	openssl-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -77,6 +79,7 @@ Summary(ru):	Разработка HTTP-клиентов под GNOME - статические библиотеки
 Summary(uk):	Розробка HTTP-кл╕╓нт╕в п╕д GNOME - статичн╕ б╕бл╕отеки
 Group:		X11/Development/Libraries
 Requires:	%{name}-devel = %{epoch}:%{version}-%{release}
+Requires:	openssl-devel
 
 %description static
 GNOME HTTP client static library.
@@ -98,19 +101,24 @@ libghttp.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 %{__libtoolize}
 %{__aclocal}
 %{__autoconf}
-%configure
-%{__make}
+%{__automake}
+%configure \
+	--enable-ssl
+%{__make} \
+	libghttp_la_LIBADD="-lssl -lcrypto"
 
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_includedir}/ghttp-1.0
 
-%{__make} install DESTDIR=$RPM_BUILD_ROOT
+%{__make} install \
+	DESTDIR=$RPM_BUILD_ROOT
 
 install http_*.h $RPM_BUILD_ROOT%{_includedir}/ghttp-1.0
 
@@ -123,15 +131,16 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README
-%attr(755,root,root) %{_libdir}/lib*.so.*.*
+%attr(755,root,root) %{_libdir}/libghttp.so.*.*
 
 %files devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/*.sh
-%attr(755,root,root) %{_libdir}/lib*.so
-%{_libdir}/lib*.la
-%{_includedir}/*
+%attr(755,root,root) %{_libdir}/ghttpConf.sh
+%attr(755,root,root) %{_libdir}/libghttp.so
+%{_libdir}/libghttp.la
+%{_includedir}/ghttp*.h
+%{_includedir}/ghttp-1.0
 
 %files static
 %defattr(644,root,root,755)
-%{_libdir}/lib*.a
+%{_libdir}/libghttp.a
