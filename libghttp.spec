@@ -48,7 +48,7 @@ Summary(pt_BR):	Componentes para desenvolvimento com o cliente http do GNOME.
 Summary(ru):	Разработка http-клиентов под GNOME
 Summary(uk):	Розробка http-кл╕╓нт╕в п╕д GNOME
 Group:		Development/Libraries
-Requires:	%{name} = %{epoch}:%{version}
+Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description devel
 Libraries and includes files you can use for libghttp development.
@@ -76,7 +76,7 @@ Summary(pt_BR):	Bibliotecas estАticas para desenvolvimento com libghttp
 Summary(ru):	Разработка http-клиентов под GNOME - статические библиотеки
 Summary(uk):	Розробка http-кл╕╓нт╕в п╕д GNOME - статичн╕ б╕бл╕отеки
 Group:		X11/Development/Libraries
-Requires:	%{name}-devel = %{epoch}:%{version}
+Requires:	%{name}-devel = %{epoch}:%{version}-%{release}
 
 %description static
 GNOME http client static library.
