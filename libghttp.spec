@@ -12,7 +12,7 @@ Epoch:		1
 License:	LGPL
 Group:		Libraries
 Source0:	ftp://ftp.gnome.org/pub/GNOME/sources/libghttp/1.0/%{name}-%{version}.tar.gz
-# Source0-md5: 0690e7456f9a15c635f240f3d6d5dab2
+# Source0-md5:	0690e7456f9a15c635f240f3d6d5dab2
 Patch0:		%{name}-ac.patch
 Patch1:		%{name}-fixlocale.patch
 URL:		http://www.gnome.org/
