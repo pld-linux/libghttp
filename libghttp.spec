@@ -50,7 +50,7 @@ Wersja statyczna biblioteki libghttp.
 %build
 libtoolize --copy --force
 aclocal
-autoconf
+%{__autoconf}
 %configure
 %{__make}
 
