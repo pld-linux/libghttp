@@ -49,9 +49,8 @@ Wersja statyczna biblioteki libghttp
 %setup -q
 
 %build
-CFLAGS="$RPM_OPT_FLAGS" LDCONFIG="-s" \
-./configure %{_target_platform} \
-	--prefix=%{_prefix}
+LDCONFIG="-s"; export LDCONFIG
+%configure
 make
 
 %install
