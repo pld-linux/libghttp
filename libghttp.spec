@@ -1,6 +1,6 @@
 Summary:     GNOME http client library
 Name:        libghttp
-Version:     0.30
+Version:     0.99
 Release:     1
 Copyright:   GPL
 Group:       X11/gnome
@@ -31,14 +31,15 @@ GNOME http client static library.
 %setup -q
 
 %build
-CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=/usr/X11R6
-
+CFLAGS="$RPM_OPT_FLAGS" LDCONFIG="-s" \
+./configure \
+	--prefix=/usr/X11R6
 make
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-make prefix=$RPM_BUILD_ROOT/usr/X11R6 install
+make install DESTDIR=$RPM_BUILD_ROOT
 
 strip $RPM_BUILD_ROOT/usr/X11R6/lib/lib*so.*.*
 
@@ -49,20 +50,23 @@ strip $RPM_BUILD_ROOT/usr/X11R6/lib/lib*so.*.*
 rm -rf $RPM_BUILD_ROOT
 
 %files
-%defattr(644, root, root, 755)
-
-/usr/X11R6/lib/lib*.so.*
+%attr(755, root, root) /usr/X11R6/lib/lib*.so.*
 
 %files devel
 %defattr(644, root, root, 755)
 %doc AUTHORS ChangeLog NEWS README
-/usr/X11R6/lib/lib*.so
+%attr(755, root, root) /usr/X11R6/lib/lib*.so
 /usr/X11R6/include/*
 
 %files static
 %attr(644, root, root) /usr/X11R6/lib/*a
 
 %changelog
+* Mon Jan 04 1999 Tomasz K³oczko <kloczek@rudy.mif.pg.gda.pl>
+  [0.99-1]
+- added LDFLAGS="-s" to ./configure enviroment,
+- fixed permission on /usr/X11R6/lib/lib* files.
+
 * Fri Oct  2 1998 Tomasz K³oczko <kloczek@rudy.mif.pg.gda.pl>
   [0.30-1]
 - added -q %setup parameter,
