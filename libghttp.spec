@@ -1,8 +1,8 @@
 Summary:	GNOME http client library
 Summary(pl):	Biblioteka funkcji klienta http
 Name:		libghttp
-Version:	1.0.2
-Release:	2
+Version:	1.0.4
+Release:	1
 Group:		X11/GNOME/Libraries
 Group(pl):	X11/GNOME/Biblioteki
 Copyright:	GPL
@@ -77,7 +77,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc {AUTHORS,ChangeLog,NEWS,README}.gz
 
-%attr(755, root, root) %{_libdir}/lib*.so
+%attr(755,root,root) %{_libdir}/lib*.so
 %{_includedir}/*
 
 %files static
