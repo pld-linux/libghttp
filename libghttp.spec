@@ -2,9 +2,11 @@ Summary:	GNOME http client library
 Summary(pl):	Biblioteka funkcji klienta http
 Name:		libghttp
 Version:	1.0.7
-Release:	1
+Release:	2
 License:	LGPL
 Group:		Libraries
+Group(de):	Libraries
+Group(fr):	Librairies
 Group(pl):	Biblioteki
 Source0:	ftp://ftp.gnome.org/pub/GNOME/stable/sources/libghttp/%{name}-%{version}.tar.gz
 URL:		http://www.gnome.org/
@@ -20,6 +22,8 @@ Biblioteka funkcji umo¿liwiaj±cych realizacjê protoko³u HTTP 1.1.
 Summary:	GNOME http client development
 Summary(pl):	Biblioteki i pliki nag³ówkowe libghttp
 Group:		Development/Libraries
+Group(de):	Entwicklung/Libraries
+Group(fr):	Development/Librairies
 Group(pl):	Programowanie/Biblioteki
 Requires:	%{name} = %{version}
 
@@ -33,8 +37,9 @@ wykorzystaniem libghttp.
 %package static
 Summary:	GNOME http client static library
 Summary(pl):	Statyczna biblioteka libghttp
-Group:		X11/GNOME/Development/Libraries
-Group(pl):	X11/GNOME/Programowanie/Biblioteki
+Group:		X11/Development/Libraries
+Group(de):	X11/Entwicklung/Libraries
+Group(pl):	X11/Programowanie/Biblioteki
 Requires:	%{name}-devel = %{version}
 
 %description static
@@ -47,7 +52,6 @@ Wersja statyczna biblioteki libghttp.
 %setup -q
 
 %build
-LDFLAGS="-s"; export LDFLAGS
 %configure
 %{__make}
 
@@ -55,8 +59,6 @@ LDFLAGS="-s"; export LDFLAGS
 rm -rf $RPM_BUILD_ROOT
 
 %{__make} install DESTDIR=$RPM_BUILD_ROOT
-
-strip --strip-unneeded $RPM_BUILD_ROOT%{_libdir}/lib*so.*.*
 
 gzip -9nf AUTHORS ChangeLog NEWS README
 
