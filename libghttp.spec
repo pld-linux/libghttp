@@ -1,34 +1,47 @@
-Summary:     GNOME http client library
-Name:        libghttp
-Version:     1.0.2
-Release:     1
-Group:       X11/GNOME
-Group(pl):   X11/GNOME
-Copyright:   GPL
-Source:      ftp://ftp.gnome.org/pub/GNOME/sources/%{name}-%{version}.tar.gz
-URL:         http://www.gnome.org/
-BuildRoot:   /tmp/%{name}-%{version}-root
+Summary:     	GNOME http client library
+Summary(pl):	Biblioteka funkcji klienta http
+Name:        	libghttp
+Version:     	1.0.2
+Release:     	1
+Group:       	X11/GNOME/Libraries
+Group(pl):   	X11/GNOME/Biblioteki
+Copyright:   	GPL
+Source:      	ftp://ftp.gnome.org/pub/GNOME/sources/%{name}-%{version}.tar.gz
+URL:         	http://www.gnome.org/
+BuildRoot:   	/tmp/%{name}-%{version}-root
 
 %description
 Library for making HTTP 1.1 requests.
 
+%description -l pl
+Biblioteka funkcji umo¿liwiaj±cych realizacjê protoko³u HTTP 1.1
+
 %package devel
-Summary:     GNOME http client development
-Group:       X11/GNOME
-Group(pl):   X11/GNOME
-Requires:    %{name} = %{version}
+Summary:     	GNOME http client development
+Summary(pl):	Biblioteki i pliki nag³owkowe libghttp
+Group:       	X11/GNOME/Development/Libraries
+Group(pl):   	X11/GNOME/Programowanie/Biblioteki
+Requires:    	%{name} = %{version}
 
 %description devel
 Libraries and includes files you can use for libghttp development
 
+%description devel -l pl
+Biblioteki i pliki nag³owkowe potrzebne do programowania z wykorzystaniem 
+libghttp
+
 %package static
-Summary:     GNOME http client static library
-Group:       X11/GNOME
-Group(pl):   X11/GNOME
-Requires:    %{name}-devel = %{version}
+Summary:    	GNOME http client static library
+Summary(pl):	Statyczna biblioteka libghttp
+Group:       	X11/GNOME/Development/Libraries
+Group(pl):   	X11/GNOME/Programowanie/Biblioteki
+Requires:    	%{name}-devel = %{version}
 
 %description static
 GNOME http client static library.
+
+%description static -l pl
+Wersja statyczna biblioteki libghttp
 
 %prep
 %setup -q
