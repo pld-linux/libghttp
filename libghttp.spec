@@ -50,7 +50,7 @@ Wersja statyczna biblioteki libghttp
 
 %build
 CFLAGS="$RPM_OPT_FLAGS" LDCONFIG="-s" \
-./configure %{_target} \
+./configure %{_target_platform} \
 	--prefix=%{_prefix}
 make
 
