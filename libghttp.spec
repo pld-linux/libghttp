@@ -73,4 +73,4 @@ rm -rf $RPM_BUILD_ROOT
 - removed COPYING from %doc,
 - all %doc moved to devel,
 - added full %attr description in %files,
-- added striping shared libraries.
+- added stripping shared libraries.
