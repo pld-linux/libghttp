@@ -49,7 +49,7 @@ Wersja statyczna biblioteki libghttp.
 
 %build
 %{__libtoolize}
-aclocal
+%{__aclocal}
 %{__autoconf}
 %configure
 %{__make}
