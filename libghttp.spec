@@ -1,9 +1,10 @@
 Summary:     GNOME http client library
 Name:        libghttp
 Version:     0.99.2
-Release:     1
-Copyright:   GPL
+Release:     2
 Group:       X11/GNOME
+Group(pl):   X11/GNOME
+Copyright:   GPL
 Source:      ftp://ftp.gnome.org/pub/GNOME/sources/%{name}-%{version}.tar.gz
 URL:         http://www.gnome.org/
 BuildRoot:   /tmp/%{name}-%{version}-root
@@ -13,7 +14,8 @@ Library for making HTTP 1.1 requests.
 
 %package devel
 Summary:     GNOME http client development
-Group:       X11/gnome
+Group:       X11/GNOME
+Group(pl):   X11/GNOME
 Requires:    %{name} = %{version}
 
 %description devel
@@ -22,6 +24,7 @@ Libraries and includes files you can use for libghttp development
 %package static
 Summary:     GNOME http client static library
 Group:       X11/GNOME
+Group(pl):   X11/GNOME
 Requires:    %{name}-devel = %{version}
 
 %description static
@@ -43,6 +46,8 @@ make install DESTDIR=$RPM_BUILD_ROOT
 
 strip $RPM_BUILD_ROOT/usr/X11R6/lib/lib*so.*.*
 
+gzip -9nf AUTHORS ChangeLog NEWS README
+
 %post   -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
 
@@ -54,7 +59,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(644,root,root,755)
-%doc AUTHORS ChangeLog NEWS README
+%doc {AUTHORS,ChangeLog,NEWS,README}.gz
+
 %attr(755, root, root) /usr/X11R6/lib/lib*.so
 /usr/X11R6/include/*
 
@@ -62,6 +68,11 @@ rm -rf $RPM_BUILD_ROOT
 %attr(644,root,root) /usr/X11R6/lib/*a
 
 %changelog
+* Sun Mar 14 1999 Micha³ Kuratczyk <kura@pld.org.pl>
+  [0.99-2]
+- added Group(pl)
+- added gzipping documentation
+
 * Mon Jan 04 1999 Tomasz K³oczko <kloczek@rudy.mif.pg.gda.pl>
   [0.99-1]
 - added LDFLAGS="-s" to ./configure enviroment,
