@@ -48,7 +48,7 @@ Wersja statyczna biblioteki libghttp
 
 %build
 CFLAGS="$RPM_OPT_FLAGS" LDCONFIG="-s" \
-./configure \
+./configure %{_target} \
 	--prefix=/usr/X11R6
 make
 
