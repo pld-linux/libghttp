@@ -1,7 +1,7 @@
 Summary:	GNOME http client library
 Summary(pl):	Biblioteka funkcji klienta http
 Name:		libghttp
-Version:	1.0.5
+Version:	1.0.6
 Release:	1
 License:	LGPL
 Group:		X11/GNOME/Libraries
@@ -10,17 +10,15 @@ Source0:	ftp://ftp.gnome.org/pub/GNOME/stable/sources/libghttp/%{name}-%{version
 URL:		http://www.gnome.org/
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define _prefix /usr/X11R6
-
 %description
 Library for making HTTP 1.1 requests.
 
 %description -l pl
-Biblioteka funkcji umo¿liwiaj±cych realizacjê protoko³u HTTP 1.1
+Biblioteka funkcji umo¿liwiaj±cych realizacjê protoko³u HTTP 1.1.
 
 %package devel
 Summary:	GNOME http client development
-Summary(pl):	Biblioteki i pliki nag³owkowe libghttp
+Summary(pl):	Biblioteki i pliki nag³ówkowe libghttp
 Group:		X11/GNOME/Development/Libraries
 Group(pl):	X11/GNOME/Programowanie/Biblioteki
 Requires:	%{name} = %{version}
@@ -49,7 +47,7 @@ Wersja statyczna biblioteki libghttp.
 %setup -q
 
 %build
-LDCONFIG="-s"; export LDCONFIG
+LDFLAGS="-s"; export LDFLAGS
 %configure
 make
 
