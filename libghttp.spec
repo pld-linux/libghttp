@@ -2,13 +2,17 @@ Summary:	GNOME http client library
 Summary(pl):	Biblioteka funkcji klienta http
 Name:		libghttp
 Version:	1.0.9
-Release:	2
+Release:	3
 Epoch:		1
 License:	LGPL
 Group:		Libraries
 Group(de):	Libraries
+Group(es):	Bibliotecas
 Group(fr):	Librairies
 Group(pl):	Biblioteki
+Group(pt_BR):	Bibliotecas
+Group(ru):	Библиотеки
+Group(uk):	Б╕бл╕отеки
 Source0:	ftp://ftp.gnome.org/pub/GNOME/stable/sources/libghttp/%{name}-%{version}.tar.gz
 URL:		http://www.gnome.org/
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -24,8 +28,12 @@ Summary:	GNOME http client development
 Summary(pl):	Biblioteki i pliki nagЁСwkowe libghttp
 Group:		Development/Libraries
 Group(de):	Entwicklung/Libraries
+Group(es):	Desarrollo/Bibliotecas
 Group(fr):	Development/Librairies
 Group(pl):	Programowanie/Biblioteki
+Group(pt_BR):	Desenvolvimento/Bibliotecas
+Group(ru):	Разработка/Библиотеки
+Group(uk):	Розробка/Б╕бл╕отеки
 Requires:	%{name} = %{version}
 
 %description devel
@@ -40,7 +48,12 @@ Summary:	GNOME http client static library
 Summary(pl):	Statyczna biblioteka libghttp
 Group:		X11/Development/Libraries
 Group(de):	X11/Entwicklung/Libraries
+Group(es):	X11/Desarrollo/Bibliotecas
+Group(fr):	X11/Development/Librairies
 Group(pl):	X11/Programowanie/Biblioteki
+Group(pt_BR):	X11/Desenvolvimento/Bibliotecas
+Group(ru):	X11/Разработка/Библиотеки
+Group(uk):	X11/Розробка/Б╕бл╕отеки
 Requires:	%{name}-devel = %{version}
 
 %description static
@@ -53,6 +66,9 @@ Wersja statyczna biblioteki libghttp.
 %setup -q
 
 %build
+libtoolize --copy --force
+aclocal
+autoconf
 %configure
 %{__make}
 
@@ -75,7 +91,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(644,root,root,755)
-%doc {AUTHORS,ChangeLog,NEWS,README}.gz
+%doc *.gz
 %attr(755,root,root) %{_libdir}/*.sh
 %attr(755,root,root) %{_libdir}/lib*.so
 %attr(755,root,root) %{_libdir}/lib*.la
