@@ -4,8 +4,8 @@ Name:		libghttp
 Version:	1.0.6
 Release:	1
 License:	LGPL
-Group:		X11/GNOME/Libraries
-Group(pl):	X11/GNOME/Biblioteki
+Group:		Libraries
+Group(pl):	Biblioteki
 Source0:	ftp://ftp.gnome.org/pub/GNOME/stable/sources/libghttp/%{name}-%{version}.tar.gz
 URL:		http://www.gnome.org/
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -19,16 +19,16 @@ Biblioteka funkcji umo¿liwiaj±cych realizacjê protoko³u HTTP 1.1.
 %package devel
 Summary:	GNOME http client development
 Summary(pl):	Biblioteki i pliki nag³ówkowe libghttp
-Group:		X11/GNOME/Development/Libraries
-Group(pl):	X11/GNOME/Programowanie/Biblioteki
+Group:		Development/Libraries
+Group(pl):	Programowanie/Biblioteki
 Requires:	%{name} = %{version}
 
 %description devel
 Libraries and includes files you can use for libghttp development.
 
 %description -l pl devel
-Biblioteki i pliki nag³ówkowe potrzebne do programowania z wykorzystaniem
-libghttp.
+Biblioteki i pliki nag³ówkowe potrzebne do programowania z
+wykorzystaniem libghttp.
 
 %package static
 Summary:	GNOME http client static library
