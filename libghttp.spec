@@ -83,30 +83,3 @@ rm -rf $RPM_BUILD_ROOT
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/lib*.a
-
-%changelog
-* Tue May 25 1999 Tomasz K³oczko <kloczek@rudy.mif.pg.gda.pl>
-  [1.0.2-1]
-- added using macros in spec.
-
-* Sun Mar 14 1999 Micha³ Kuratczyk <kura@pld.org.pl>
-  [0.99-2]
-- added Group(pl),
-- added gzipping documentation.
-
-* Mon Jan 04 1999 Tomasz K³oczko <kloczek@rudy.mif.pg.gda.pl>
-  [0.99-1]
-- added LDFLAGS="-s" to ./configure enviroment,
-- fixed permission on /usr/X11R6/lib/lib* files.
-
-* Fri Oct  2 1998 Tomasz K³oczko <kloczek@rudy.mif.pg.gda.pl>
-  [0.30-1]
-- added -q %setup parameter,
-- changed Buildroot to /tmp/%%{name}-%%{version}-root,
-- added using %%{name} and %%{version} in Source,
-- changed Copyright field to GPL,
-- removed Packager field (this must be placed in private ~/.rpmrc),
-- removed COPYING from %doc,
-- all %doc moved to devel,
-- added full %attr description in %files,
-- added stripping shared libraries.
