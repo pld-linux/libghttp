@@ -2,7 +2,7 @@ Summary:	GNOME http client library
 Summary(pl):	Biblioteka funkcji klienta http
 Name:		libghttp
 Version:	1.0.9
-Release:	4
+Release:	5
 Epoch:		1
 License:	LGPL
 Group:		Libraries
@@ -56,10 +56,11 @@ aclocal
 
 %install
 rm -rf $RPM_BUILD_ROOT
+install -d $RPM_BUILD_ROOT%{_includedir}/ghttp-1.0
 
 %{__make} install DESTDIR=$RPM_BUILD_ROOT
 
-gzip -9nf AUTHORS ChangeLog NEWS README
+install http_*.h $RPM_BUILD_ROOT%{_includedir}/ghttp-1.0
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -69,11 +70,11 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
+%doc AUTHORS ChangeLog NEWS README
 %attr(755,root,root) %{_libdir}/lib*.so.*.*
 
 %files devel
 %defattr(644,root,root,755)
-%doc *.gz
 %attr(755,root,root) %{_libdir}/*.sh
 %attr(755,root,root) %{_libdir}/lib*.so
 %attr(755,root,root) %{_libdir}/lib*.la
