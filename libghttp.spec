@@ -1,7 +1,7 @@
 Summary:     GNOME http client library
 Name:        libghttp
-Version:     0.99.2
-Release:     2
+Version:     1.0.2
+Release:     1
 Group:       X11/GNOME
 Group(pl):   X11/GNOME
 Copyright:   GPL
