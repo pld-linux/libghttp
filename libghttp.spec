@@ -25,7 +25,7 @@ Biblioteka funkcji umo¿liwiaj±cych realizacjê zapytañ HTTP 1.1.
 Summary:	GNOME http client development
 Summary(pl):	Biblioteki i pliki nag³ówkowe libghttp
 Group:		Development/Libraries
-Requires:	%{name} = %{version}
+Requires:	%{name} = %{epoch}:%{version}
 
 %description devel
 Libraries and includes files you can use for libghttp development.
@@ -38,7 +38,7 @@ wykorzystaniem libghttp.
 Summary:	GNOME http client static library
 Summary(pl):	Statyczna biblioteka libghttp
 Group:		X11/Development/Libraries
-Requires:	%{name}-devel = %{version}
+Requires:	%{name}-devel = %{epoch}:%{version}
 
 %description static
 GNOME http client static library.
