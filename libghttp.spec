@@ -40,6 +40,8 @@ rm -rf $RPM_BUILD_ROOT
 
 make prefix=$RPM_BUILD_ROOT/usr/X11R6 install
 
+strip $RPM_BUILD_ROOT/usr/X11R6/lib/lib*so.*.*
+
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
 
