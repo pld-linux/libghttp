@@ -1,0 +1,699 @@
+diff -Nur libghttp-1.0.9/ChangeLog gnome-http/ChangeLog
+--- libghttp-1.0.9/ChangeLog	2001-01-23 01:32:15.000000000 +0100
++++ gnome-http/ChangeLog	2001-06-19 08:38:30.000000000 +0200
+@@ -1,3 +1,63 @@
++2001-06-18  Robey Pointer  <robey@lag.net>
++
++	* MAINTAINERS:
++
++	Added myself.
++
++2001-05-12  Robey Pointer  <robey@lag.net>
++
++	* http_req.c: (http_req_send):
++
++	Christian Marillat pointed out that using %f to read/write the
++	HTTP version number is locale-dependent.  Switched to using a %d
++	format.  The HTTP version is still stored internally as a float,
++	which is bad because of potential rounding issues, but we can deal
++	with that later.
++
++2001-04-18  Robey Pointer  <robey@eazel.com>
++
++	* test_client.c: (main):
++	* test_client_old.c: (main), (test_uri_parser), (test_date_parser):
++
++	Replace old test_client with one that actually uses the ghttp API,
++	and make it try out the SSL stuff.
++
++2001-04-18  Robey Pointer  <robey@eazel.com>
++
++	* configure.in:
++	* ghttp.c: (ghttp_enable_ssl), (ghttp_disable_ssl),
++	(ghttp_set_ssl_certificate_callback):
++	* ghttp.h:
++	* http_trans.c: (http_trans_read_into_buf):
++	* http_uri.c: (http_uri_parse):
++	
++	Modified the SSL support a little bit to include -lcrypto since
++	that's needed by openSSL now.  Moved ghttp_ssl.h into ghttp.h so
++	that an application can always try ghttp_enable_ssl, but it will
++	always return -1 if gnome-http was built without SSL support.  Fix
++	small bug in trans_read that wouldn't notice when an SSL
++	connection hit EOF.  Mark all https: URIs as invalid when SSL
++	support is off.
++	
++2001-04-18  Bill Gribble  <grib@billgribble.com>
++
++	* configure.in:
++	* ghttp.c: (ghttp_request_new), (ghttp_request_destroy),
++	(ghttp_set_uri), (ghttp_prepare), (ghttp_process), (ghttp_close),
++	(ghttp_set_proxy_authinfo):
++	* ghttp.h:
++	* http_trans.c: (http_trans_connect), (http_trans_conn_new),
++	(http_trans_conn_destroy), (http_trans_conn_close),
++	(http_trans_conn_set_ssl), (http_trans_read_into_buf),
++	(http_trans_write_buf):
++	* http_trans.h:
++	* http_uri.c: (http_uri_parse):
++
++	Add SSL support.  enable with --enable-ssl arg to configure.
++	SSL must be enabled on a per-request basis with ghttp_enable_ssl
++	and you must provide a certificate-verification callback with
++	ghttp_set_ssl_certificate_callback for ssl-enabled connections.
++
+ 2001-01-17  Robey Pointer  <robey@eazel.com>
+ 
+ 	reviewed by: J Shane Culpepper  <pepper@eazel.com>
+diff -Nur libghttp-1.0.9/configure.in gnome-http/configure.in
+--- libghttp-1.0.9/configure.in	2000-12-05 20:49:14.000000000 +0100
++++ gnome-http/configure.in	2001-04-19 04:02:57.000000000 +0200
+@@ -40,6 +40,27 @@
+ 	;;
+ esac
+ 
++AC_ARG_WITH( ssl-dir,
++  [  --with-ssl-dir=PATH	specify where to look for OpenSSL libraries],
++	SSL_DIR="$with_ssl_dir",
++	SSL_DIR="")
++
++AC_SUBST(SSL_DIR)
++
++AC_ARG_ENABLE( ssl,
++  [  --enable-ssl	Compile with OpenSSL support ],
++  AC_DEFINE(USE_SSL,1)
++  using_ssl=yes,
++  using_ssl=no)
++
++if test "$using_ssl" = "yes"; then
++  AC_CHECK_LIB(ssl, SSL_new,
++               GHTTP_LIBS="${GHTTP_LIBS} -L${SSL_DIR}/lib -lssl -lcrypto"
++	       GHTTP_INCLUDEDIR="${GHTTP_INCLUDEDIR} -I${SSL_DIR}/include",
++	       AC_MSG_ERROR([Cannot find SSL libraries.  See the README for more info.]),
++               -lcrypto)
++fi
++
+ AC_SUBST(GHTTP_LIBDIR)
+ AC_SUBST(GHTTP_LIBS)
+ AC_SUBST(GHTTP_INCLUDEDIR)
+diff -Nur libghttp-1.0.9/ghttp.c gnome-http/ghttp.c
+--- libghttp-1.0.9/ghttp.c	2001-01-23 01:32:15.000000000 +0100
++++ gnome-http/ghttp.c	2001-04-19 04:02:57.000000000 +0200
+@@ -22,6 +22,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <unistd.h>
++
+ #include "ghttp.h"
+ #include "http_uri.h"
+ #include "http_hdrs.h"
+@@ -48,8 +49,16 @@
+   char               *proxy_username;
+   char               *proxy_password;
+   char               *proxy_authtoken;
++  int                 secure_uri;
++  int                 ssl_allowed;
++#ifdef USE_SSL
++  ghttp_ssl_cert_cb   cert_cb;
++  void               *cert_cb_data;
++#endif
+ };
+ 
++
++
+ static const char *basic_header = "Basic ";
+ 
+ ghttp_request *
+@@ -65,6 +74,8 @@
+   l_return->req = http_req_new();
+   l_return->resp = http_resp_new();
+   l_return->conn = http_trans_conn_new();
++  l_return->secure_uri = 0;
++  l_return->ssl_allowed = 0;
+   return l_return;
+ }
+ 
+@@ -76,9 +87,9 @@
+   /* make sure that the socket was shut down. */
+   if (a_request->conn->sock >= 0)
+     {
+-      close(a_request->conn->sock);
+-      a_request->conn->sock = -1;
++      http_trans_conn_close(a_request->conn);
+     }
++  
+   /* destroy everything else */
+   if (a_request->uri)
+     http_uri_destroy(a_request->uri);
+@@ -179,6 +190,14 @@
+ 	  http_uri_destroy(a_request->uri);
+ 	  a_request->uri = l_new_uri;
+ 	}
++
++#ifdef USE_SSL
++      if (!strcmp(a_request->uri->proto, "https") &&
++          a_request->ssl_allowed)
++        {
++          a_request->secure_uri = 1;
++        }
++#endif
+     }
+   return 0;
+ }
+@@ -302,15 +321,18 @@
+ {
+   /* only allow http requests if no proxy has been set */
+   if (!a_request->proxy->host && a_request->uri->proto &&
+-      strcmp(a_request->uri->proto, "http"))
++      strcmp(a_request->uri->proto, "http") &&
++      strcmp(a_request->uri->proto, "https"))        
+     return 1;
++  
+   /* check to see if we have to set up the
+      host information */
+   if ((a_request->conn->host == NULL) ||
+       (a_request->conn->host != a_request->uri->host) ||
+       (a_request->conn->port != a_request->uri->port) ||
++      (a_request->conn->use_ssl != a_request->secure_uri) ||
+       (a_request->conn->proxy_host != a_request->proxy->host) ||
+-      (a_request->conn->proxy_port != a_request->proxy->port))
++      (a_request->conn->proxy_port != a_request->proxy->port)) 
+     {
+       /* reset everything. */
+       a_request->conn->host = a_request->uri->host;
+@@ -320,11 +342,12 @@
+       a_request->conn->proxy_host = a_request->proxy->host;
+       a_request->conn->proxy_port = a_request->proxy->port;
+       a_request->conn->hostinfo = NULL;
++      http_trans_conn_set_ssl(a_request->conn, a_request->secure_uri);
++      
+       /* close the socket if it looks open */
+       if (a_request->conn->sock >= 0)
+ 	{
+-	  close(a_request->conn->sock);
+-	  a_request->conn->sock = -1;
++          http_trans_conn_close(a_request->conn);
+ 	  a_request->connected = 0;
+ 	}
+     }
+@@ -362,7 +385,7 @@
+ }
+ 
+ ghttp_status
+-ghttp_process(ghttp_request *a_request)
++ghttp_process (ghttp_request *a_request)
+ {
+   int l_rv = 0;
+ 
+@@ -380,7 +403,27 @@
+ 		a_request->errstr = http_trans_get_host_error(h_errno);
+ 	      return ghttp_error;
+ 	    }
+-	  a_request->connected = 1;
++#ifdef USE_SSL 
++          /* call callback to verify certificate if it's an SSL connection*/
++          if(a_request->conn->use_ssl) 
++            { 
++              if(a_request->conn->ssl_cert &&
++                 ((a_request->cert_cb == NULL) ||
++                  (*a_request->cert_cb)(a_request, a_request->conn->ssl_cert, 
++                                        a_request->cert_cb_data))) 
++                {
++                  a_request->connected = 1;     
++                }
++              else 
++                {
++                  return ghttp_error;
++                }
++            }
++          else 
++            a_request->connected = 1;
++#else 
++          a_request->connected = 1;
++#endif	  
+ 	}
+       l_rv = http_req_send(a_request->req, a_request->conn);
+       if (l_rv == HTTP_TRANS_ERR)
+@@ -486,11 +529,9 @@
+ {
+   if (!a_request)
+     return -1;
+-  if (a_request->conn->sock >= 0)
+-    {
+-      close(a_request->conn->sock);
+-      a_request->conn->sock = -1;
+-    }
++
++  http_trans_conn_close(a_request->conn);
++
+   a_request->connected = 0;
+   return 0;
+ }
+@@ -761,3 +802,36 @@
+   
+   return 0;
+ }
++
++int
++ghttp_enable_ssl(ghttp_request *a_request) {
++#ifdef USE_SSL 
++  if(!a_request) return -1;
++  a_request->ssl_allowed = 1;
++  return 0;
++#else
++  return -1;
++#endif
++}
++
++int
++ghttp_disable_ssl(ghttp_request *a_request) {
++#ifdef USE_SSL 
++  if(!a_request) return -1;
++  a_request->ssl_allowed = 0;
++  return 0;
++#else
++  return -1;
++#endif
++}
++
++void
++ghttp_set_ssl_certificate_callback(ghttp_request     *a_request,
++                                   ghttp_ssl_cert_cb callback,
++                                   void              *user_data) 
++{
++#ifdef USE_SSL
++  a_request->cert_cb      = callback;
++  a_request->cert_cb_data = user_data;
++#endif
++}
+diff -Nur libghttp-1.0.9/ghttp.h gnome-http/ghttp.h
+--- libghttp-1.0.9/ghttp.h	2001-01-23 01:32:15.000000000 +0100
++++ gnome-http/ghttp.h	2001-04-19 04:02:57.000000000 +0200
+@@ -254,6 +254,33 @@
+ 			 const char *a_user,
+ 			 const char *a_pass);
+ 
++/* some SSL hooks */
++
++#ifdef USE_SSL
++#include <openssl/x509.h>
++
++typedef int (* ghttp_ssl_cert_cb)(ghttp_request *a_request, 
++                                  X509 *certificate, 
++                                  void * user_data);
++#else
++typedef int (* ghttp_ssl_cert_cb)(ghttp_request *a_request, 
++                                  void *certificate, 
++                                  void * user_data);
++#endif
++
++void ghttp_set_ssl_certificate_callback(ghttp_request *a_request,
++                                        ghttp_ssl_cert_cb callback, 
++                                        void * user_data);
++
++/* Attempt to enable SSL for this request.
++ * If gnome-http was built without SSL support, this always returns -1.
++ */
++int ghttp_enable_ssl(ghttp_request *a_request);
++
++/* Disable SSL for this request.  (This is the default.)
++ * If gnome-http was built without SSL support, this always returns -1.
++ */
++int ghttp_disable_ssl(ghttp_request *a_request);
+ 
+ #ifdef __cplusplus
+ }
+diff -Nur libghttp-1.0.9/http_trans.c gnome-http/http_trans.c
+--- libghttp-1.0.9/http_trans.c	1998-12-07 23:18:58.000000000 +0100
++++ gnome-http/http_trans.c	2001-04-19 04:02:57.000000000 +0200
+@@ -26,15 +26,29 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <errno.h>
++
+ #include "http_trans.h"
+ #include "http_global.h"
+ 
+-static int
+-http_trans_buf_free(http_trans_conn *a_conn);
++#ifdef USE_SSL
++#include <openssl/crypto.h>
++#include <openssl/x509.h>
++#include <openssl/pem.h>
++#include <openssl/ssl.h>
++#include <openssl/err.h>
++
++static int          ssl_initialized = 0;
++static SSL_METHOD * ssl_method = NULL;
++static SSL_CTX    * ssl_context = NULL;
++#endif
++
++static int http_trans_buf_free(http_trans_conn *a_conn);
+ 
+ int
+ http_trans_connect(http_trans_conn *a_conn)
+ {
++  int err_ret;
++
+   if ((a_conn == NULL) || (a_conn->host == NULL))
+     goto ec;
+   if (a_conn->hostinfo == NULL)
+@@ -87,6 +101,44 @@
+       a_conn->error = errno;
+       goto ec;
+     }
++#ifdef USE_SSL
++  /* initialize the SSL data structures */
++  if (a_conn->use_ssl) 
++    {
++      if(a_conn->ssl_conn) 
++        {
++          SSL_free(a_conn->ssl_conn);
++          a_conn->ssl_conn = NULL;
++        }
++      
++      a_conn->ssl_conn = SSL_new(ssl_context);
++      if(a_conn->ssl_conn == NULL) {
++        a_conn->error_type = http_trans_err_type_ssl;
++        a_conn->error = ERR_get_error();
++        goto ec;
++      }
++
++      SSL_set_fd(a_conn->ssl_conn, a_conn->sock);
++      if((err_ret = SSL_connect(a_conn->ssl_conn)) < 1) {
++        a_conn->error_type = http_trans_err_type_ssl;
++        a_conn->error = SSL_get_error(a_conn->ssl_conn, err_ret);        
++        goto ec;
++      }
++      
++      if(a_conn->ssl_cert) 
++        {
++          X509_free(a_conn->ssl_cert);
++          a_conn->ssl_cert = NULL;      
++        }
++      
++      a_conn->ssl_cert = SSL_get_peer_certificate(a_conn->ssl_conn);
++      if(a_conn->ssl_cert == NULL) {
++        a_conn->error_type = http_trans_err_type_ssl;
++        a_conn->error = SSL_get_error(a_conn->ssl_conn, err_ret);        
++        goto ec;
++      }
++    }
++#endif
+   
+   return 0;
+  ec:
+@@ -111,6 +163,12 @@
+   l_return->io_buf_len = l_return->io_buf_chunksize;
+   /* make sure the socket looks like it's closed */
+   l_return->sock = -1;
++  /* don't use SSL until told to */
++  l_return->use_ssl = 0;
++#ifdef USE_SSL
++  l_return->ssl_conn = NULL;
++  l_return->ssl_cert = NULL;
++#endif  
+   return l_return;
+ }
+ 
+@@ -120,14 +178,92 @@
+   /* destroy the connection structure. */
+   if (a_conn == NULL)
+     return;
++
++  /* close the connection */
++  http_trans_conn_close(a_conn);
++
+   if (a_conn->io_buf)
+     free(a_conn->io_buf);
+-  if (a_conn->sock != -1)
+-    close(a_conn->sock);
++  
+   free(a_conn);
+   return;
+ }
+ 
++void
++http_trans_conn_close(http_trans_conn * a_conn) 
++{
++  if(a_conn == NULL) 
++    return;
++  
++#ifdef USE_SSL
++  if(a_conn->use_ssl) 
++    {
++      if(a_conn->ssl_conn) 
++        {
++          SSL_shutdown(a_conn->ssl_conn);
++          if(a_conn->sock != -1) 
++            {
++              close(a_conn->sock);
++              a_conn->sock = -1;
++            }
++          SSL_free(a_conn->ssl_conn);
++          a_conn->ssl_conn = NULL;
++        }
++      if (a_conn->ssl_cert) 
++        {
++          X509_free(a_conn->ssl_cert);
++          a_conn->ssl_cert = NULL;
++        }
++      a_conn->use_ssl = 0;
++    }
++#endif
++  
++  if (a_conn->sock != -1)
++    {
++      close(a_conn->sock);
++      a_conn->sock = -1;
++    }
++}
++
++void
++http_trans_conn_set_ssl(http_trans_conn * a_conn, int use_ssl) 
++{
++  if(a_conn == NULL)
++    return;
++  
++  if(use_ssl == a_conn->use_ssl) 
++    return;
++
++#ifdef USE_SSL
++  if(use_ssl) {
++    a_conn->use_ssl = 1;
++
++    if (ssl_initialized == 0) 
++      {
++        /* initialize OpenSSL */
++        SSLeay_add_ssl_algorithms();
++        ssl_method = SSLv2_client_method();    
++        SSL_load_error_strings();
++        ssl_context = SSL_CTX_new(ssl_method);
++        if(ssl_context == NULL) 
++          {
++            a_conn->error_type = http_trans_err_type_ssl;
++            a_conn->error = ERR_get_error();        
++            return;
++            ssl_initialized = 0;
++          }
++        else 
++          {
++            ssl_initialized = 1;
++          }
++      }    
++  }
++  
++#else
++  a_conn->use_ssl = 0;
++#endif
++}
++
+ const char *
+ http_trans_get_host_error(int a_herror)
+ {
+@@ -185,10 +321,34 @@
+     l_bytes_to_read = a_conn->io_buf_chunksize;
+   else
+     l_bytes_to_read = a_conn->io_buf_io_left;
++  
+   /* read in some data */
+-  if ((a_conn->last_read = l_read = read(a_conn->sock,
+-					 &a_conn->io_buf[a_conn->io_buf_alloc],
+-					 l_bytes_to_read)) < 0)
++  if(a_conn->use_ssl) 
++    {
++#ifdef USE_SSL
++      if ((a_conn->last_read = l_read = 
++           SSL_read(a_conn->ssl_conn,
++                    &a_conn->io_buf[a_conn->io_buf_alloc],
++                    l_bytes_to_read)) < 0)
++        {
++          long int sslerr = SSL_get_error(a_conn->ssl_conn, l_read);
++          if((sslerr == SSL_ERROR_WANT_READ) ||
++             (sslerr == SSL_ERROR_WANT_WRITE)) 
++            l_read = 0;
++          else
++            return HTTP_TRANS_ERR;
++        }
++      else if (l_read == 0) {
++        return HTTP_TRANS_DONE;
++      }
++#else 
++      return HTTP_TRANS_ERR;
++#endif
++    }
++  else if ((a_conn->last_read = l_read = 
++            read(a_conn->sock,
++                 &a_conn->io_buf[a_conn->io_buf_alloc],
++                 l_bytes_to_read)) < 0)
+     {
+       if (errno == EINTR)
+ 	l_read = 0;
+@@ -197,13 +357,16 @@
+     }
+   else if (l_read == 0)
+     return HTTP_TRANS_DONE;
++  
+   /* mark the buffer */
+   a_conn->io_buf_io_left -= l_read;
+   a_conn->io_buf_io_done += l_read;
+   a_conn->io_buf_alloc += l_read;
++  
+   /* generate the result */
+   if (a_conn->io_buf_io_left == 0)
+     return HTTP_TRANS_DONE;
++  
+   return HTTP_TRANS_NOT_DONE;
+ }
+ 
+@@ -218,15 +381,35 @@
+       a_conn->io_buf_io_done = 0;
+     }
+   /* write out some data */
+-  if ((a_conn->last_read = l_written = write (a_conn->sock,
+-					      &a_conn->io_buf[a_conn->io_buf_io_done],
+-					      a_conn->io_buf_io_left)) <= 0)
++  if(a_conn->use_ssl) 
++    {
++#ifdef USE_SSL
++      if ((a_conn->last_read = l_written = 
++           SSL_write(a_conn->ssl_conn, 
++                     &a_conn->io_buf[a_conn->io_buf_io_done],
++                     a_conn->io_buf_io_left)) <= 0) 
++        {
++          long int sslerr = SSL_get_error(a_conn->ssl_conn, l_written);
++          if ((sslerr == SSL_ERROR_WANT_READ) ||
++              (sslerr == SSL_ERROR_WANT_WRITE)) 
++            l_written = 0;
++          else
++            return HTTP_TRANS_ERR;
++        }
++#else 
++      return HTTP_TRANS_ERR;
++#endif
++    }
++  else if ((a_conn->last_read = l_written = write (a_conn->sock,
++                                                   &a_conn->io_buf[a_conn->io_buf_io_done],
++                                                   a_conn->io_buf_io_left)) <= 0)
+     {
+       if (errno == EINTR)
+-	l_written = 0;
++        l_written = 0;
+       else
+-	return HTTP_TRANS_ERR;
++        return HTTP_TRANS_ERR;
+     }
++  
+   if (l_written == 0)
+     return HTTP_TRANS_DONE;
+   /* advance the counters */
+diff -Nur libghttp-1.0.9/http_trans.h gnome-http/http_trans.h
+--- libghttp-1.0.9/http_trans.h	1998-11-03 04:15:54.000000000 +0100
++++ gnome-http/http_trans.h	2001-04-19 04:02:57.000000000 +0200
+@@ -27,9 +27,18 @@
+ #include <netinet/in.h>
+ #include <netdb.h>
+ 
++#ifdef USE_SSL
++#include <openssl/crypto.h>
++#include <openssl/x509.h>
++#include <openssl/pem.h>
++#include <openssl/ssl.h>
++#include <openssl/err.h>
++#endif
++
+ typedef enum http_trans_err_type_tag {
+   http_trans_err_type_host = 0,
+-  http_trans_err_type_errno
++  http_trans_err_type_errno,
++  http_trans_err_type_ssl
+ } http_trans_err_type;
+ 
+ typedef struct http_trans_conn_tag {
+@@ -53,6 +62,14 @@
+   int                  last_read;         /* the size of the last read */
+   int                  chunk_len;         /* length of a chunk. */
+   char                *errstr;            /* a hint as to an error */
++
++  /* SSL support. we always have a use_ssl var, even if compiled
++   * without SSL; it's just always FALSE unless SSL is compiled in. */
++  int                  use_ssl;          
++#ifdef USE_SSL
++  SSL                 *ssl_conn;
++  X509                *ssl_cert;
++#endif
+ } http_trans_conn;
+ 
+ http_trans_conn *
+@@ -62,6 +79,9 @@
+ http_trans_conn_destroy(http_trans_conn *a_conn);
+ 
+ void
++http_trans_conn_close(http_trans_conn *a_conn);
++
++void
+ http_trans_buf_reset(http_trans_conn *a_conn);
+ 
+ void
+@@ -70,6 +90,9 @@
+ int
+ http_trans_connect(http_trans_conn *a_conn);
+ 
++void
++http_trans_conn_set_ssl(http_trans_conn * a_conn, int use_ssl);
++
+ const char *
+ http_trans_get_host_error(int a_herror);
+ 
+diff -Nur libghttp-1.0.9/http_uri.c gnome-http/http_uri.c
+--- libghttp-1.0.9/http_uri.c	2000-10-31 02:28:53.000000000 +0100
++++ gnome-http/http_uri.c	2001-04-19 04:02:57.000000000 +0200
+@@ -58,6 +58,15 @@
+     a_uri->proto = (char *)malloc(l_start_string - a_string + 1);
+     memcpy(a_uri->proto, a_string, (l_start_string - a_string));
+     a_uri->proto[l_start_string - a_string] = '\0';
++    
++    /* change default port for secure connections */
++    if(!strcmp(a_uri->proto, "https")) {
++#ifdef USE_SSL
++      a_uri->port = 443; 
++#else
++      goto ec;
++#endif
++    }
+   }
+   /* check to make sure it starts with "http://" */
+   if (strncmp(l_start_string, "://", 3) != 0)
+diff -Nur libghttp-1.0.9/MAINTAINERS gnome-http/MAINTAINERS
+--- libghttp-1.0.9/MAINTAINERS	1970-01-01 01:00:00.000000000 +0100
++++ gnome-http/MAINTAINERS	2001-06-19 08:38:30.000000000 +0200
+@@ -0,0 +1,9 @@
++Email: pepper@eazel.com
++Email: blizzard@redhat.com
++Email: robey@lag.net
++Email: justin@debian.org
++Email: devernay@istar.fr
++Email: robert.richardson@edgeint.com.au
++Email: martinh@pegasus.cc.ucf.edu
++Email: james@daa.com.au
++Email: tue@nybro.dk
