@@ -6,7 +6,7 @@ Release:	5
 Epoch:		1
 License:	LGPL
 Group:		Libraries
-Source0:	ftp://ftp.gnome.org/pub/GNOME/stable/sources/libghttp/%{name}-%{version}.tar.gz
+Source0:	ftp://ftp.gnome.org/pub/GNOME/sources/libghttp/1.0/%{name}-%{version}.tar.gz
 URL:		http://www.gnome.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
