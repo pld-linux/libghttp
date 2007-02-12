@@ -1,10 +1,10 @@
 Summary:	GNOME HTTP client library
-Summary(es):	Biblioteca cliente HTTP del GNOME
-Summary(ko):	GNOME HTTP е╛╤Сюл╬Пф╝ ╤Сюл╨Й╥╞╦╝
-Summary(pl):	Biblioteka funkcji klienta HTTP
-Summary(pt_BR):	Biblioteca cliente para HTTP do GNOME
-Summary(ru):	Библиотека HTTP-клиента для GNOME
-Summary(uk):	Б╕бл╕отека HTTP-кл╕╓нта для GNOME
+Summary(es.UTF-8):   Biblioteca cliente HTTP del GNOME
+Summary(ko.UTF-8):   GNOME HTTP М│╢К²╪Л²╢Л√╦М┼╦ К²╪Л²╢К╦▄К÷╛К╕╛
+Summary(pl.UTF-8):   Biblioteka funkcji klienta HTTP
+Summary(pt_BR.UTF-8):   Biblioteca cliente para HTTP do GNOME
+Summary(ru.UTF-8):   п▒п╦п╠п╩п╦п╬я┌п╣п╨п╟ HTTP-п╨п╩п╦п╣п╫я┌п╟ п╢п╩я▐ GNOME
+Summary(uk.UTF-8):   п▒я√п╠п╩я√п╬я┌п╣п╨п╟ HTTP-п╨п╩я√я■п╫я┌п╟ п╢п╩я▐ GNOME
 Name:		libghttp
 Version:	1.0.9
 Release:	10
@@ -26,57 +26,57 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %description
 Library for making HTTP 1.1 requests.
 
-%description -l es
+%description -l es.UTF-8
 Biblioteca cliente HTTP 1.1 del GNOME.
 
-%description -l pl
-Biblioteka funkcji umo©liwiaj╠cych realizacjЙ zapytaЯ HTTP 1.1.
+%description -l pl.UTF-8
+Biblioteka funkcji umoе╪liwiajд┘cych realizacjд≥ zapytaе└ HTTP 1.1.
 
-%description -l pt_BR
+%description -l pt_BR.UTF-8
 Biblioteca cliente para HTTP 1.1 do GNOME.
 
-%description -l ru
-Библиотека для исполнения HTTP 1.1 запросов.
+%description -l ru.UTF-8
+п▒п╦п╠п╩п╦п╬я┌п╣п╨п╟ п╢п╩я▐ п╦я│п©п╬п╩п╫п╣п╫п╦я▐ HTTP 1.1 п╥п╟п©я─п╬я│п╬п╡.
 
-%description -l uk
-Б╕бл╕отека для виконання HTTP 1.1 запит╕в.
+%description -l uk.UTF-8
+п▒я√п╠п╩я√п╬я┌п╣п╨п╟ п╢п╩я▐ п╡п╦п╨п╬п╫п╟п╫п╫я▐ HTTP 1.1 п╥п╟п©п╦я┌я√п╡.
 
 %package devel
 Summary:	GNOME HTTP client development
-Summary(es):	Biblioteca cliente HTTP 1.1 del GNOME - desarrollo
-Summary(ko):	GNOME HTTP е╛╤Сюл╬Пф╝ ╟Ё╧ъ©║ гй©Дгя ╤Сюл╨Й╥╞╦╝©м гЛ╢У фдюо
-Summary(pl):	Biblioteki i pliki nagЁСwkowe libghttp
-Summary(pt_BR):	Componentes para desenvolvimento com o cliente HTTP do GNOME.
-Summary(ru):	Разработка HTTP-клиентов под GNOME
-Summary(uk):	Розробка HTTP-кл╕╓нт╕в п╕д GNOME
+Summary(es.UTF-8):   Biblioteca cliente HTTP 1.1 del GNOME - desarrollo
+Summary(ko.UTF-8):   GNOME HTTP М│╢К²╪Л²╢Л√╦М┼╦ Й╟°К╟°Л≈░ М∙└Л ■М∙° К²╪Л²╢К╦▄К÷╛К╕╛Л≥─ М≈╓К█■ М▄▄Л²╪
+Summary(pl.UTF-8):   Biblioteki i pliki nagе┌цЁwkowe libghttp
+Summary(pt_BR.UTF-8):   Componentes para desenvolvimento com o cliente HTTP do GNOME.
+Summary(ru.UTF-8):   п═п╟п╥я─п╟п╠п╬я┌п╨п╟ HTTP-п╨п╩п╦п╣п╫я┌п╬п╡ п©п╬п╢ GNOME
+Summary(uk.UTF-8):   п═п╬п╥я─п╬п╠п╨п╟ HTTP-п╨п╩я√я■п╫я┌я√п╡ п©я√п╢ GNOME
 Group:		Development/Libraries
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description devel
 Libraries and includes files you can use for libghttp development.
 
-%description devel -l es
+%description devel -l es.UTF-8
 Biblioteca cliente HTTP 1.1 del GNOME - desarrollo.
 
-%description devel -l pl
-Biblioteki i pliki nagЁСwkowe potrzebne do programowania z
+%description devel -l pl.UTF-8
+Biblioteki i pliki nagе┌цЁwkowe potrzebne do programowania z
 wykorzystaniem libghttp.
 
-%description devel -l pt_BR
+%description devel -l pt_BR.UTF-8
 Componentes para desenvolvimento com o cliente HTTP do GNOME.
 
-%description devel -l ru
-Хедеры для разработки программ с использованием libghttp.
+%description devel -l ru.UTF-8
+п╔п╣п╢п╣я─я▀ п╢п╩я▐ я─п╟п╥я─п╟п╠п╬я┌п╨п╦ п©я─п╬пЁя─п╟п╪п╪ я│ п╦я│п©п╬п╩я▄п╥п╬п╡п╟п╫п╦п╣п╪ libghttp.
 
-%description devel -l uk
-Хедери для розробки програм з використанням libghttp.
+%description devel -l uk.UTF-8
+п╔п╣п╢п╣я─п╦ п╢п╩я▐ я─п╬п╥я─п╬п╠п╨п╦ п©я─п╬пЁя─п╟п╪ п╥ п╡п╦п╨п╬я─п╦я│я┌п╟п╫п╫я▐п╪ libghttp.
 
 %package static
 Summary:	GNOME HTTP client static library
-Summary(pl):	Statyczna biblioteka libghttp
-Summary(pt_BR):	Bibliotecas estАticas para desenvolvimento com libghttp
-Summary(ru):	Разработка HTTP-клиентов под GNOME - статические библиотеки
-Summary(uk):	Розробка HTTP-кл╕╓нт╕в п╕д GNOME - статичн╕ б╕бл╕отеки
+Summary(pl.UTF-8):   Statyczna biblioteka libghttp
+Summary(pt_BR.UTF-8):   Bibliotecas estц║ticas para desenvolvimento com libghttp
+Summary(ru.UTF-8):   п═п╟п╥я─п╟п╠п╬я┌п╨п╟ HTTP-п╨п╩п╦п╣п╫я┌п╬п╡ п©п╬п╢ GNOME - я│я┌п╟я┌п╦я┤п╣я│п╨п╦п╣ п╠п╦п╠п╩п╦п╬я┌п╣п╨п╦
+Summary(uk.UTF-8):   п═п╬п╥я─п╬п╠п╨п╟ HTTP-п╨п╩я√я■п╫я┌я√п╡ п©я√п╢ GNOME - я│я┌п╟я┌п╦я┤п╫я√ п╠я√п╠п╩я√п╬я┌п╣п╨п╦
 Group:		X11/Development/Libraries
 Requires:	%{name}-devel = %{epoch}:%{version}-%{release}
 Requires:	openssl-devel
@@ -84,18 +84,18 @@ Requires:	openssl-devel
 %description static
 GNOME HTTP client static library.
 
-%description static -l pl
+%description static -l pl.UTF-8
 Wersja statyczna biblioteki libghttp.
 
-%description static -l pt_BR
-Bibliotecas estАticas para desenvolvimento com libghttp.
+%description static -l pt_BR.UTF-8
+Bibliotecas estц║ticas para desenvolvimento com libghttp.
 
-%description static -l ru
-Статические библиотеки для разработки программ с использованием
+%description static -l ru.UTF-8
+п║я┌п╟я┌п╦я┤п╣я│п╨п╦п╣ п╠п╦п╠п╩п╦п╬я┌п╣п╨п╦ п╢п╩я▐ я─п╟п╥я─п╟п╠п╬я┌п╨п╦ п©я─п╬пЁя─п╟п╪п╪ я│ п╦я│п©п╬п╩я▄п╥п╬п╡п╟п╫п╦п╣п╪
 libghttp.
 
-%description static -l uk
-Статичн╕ б╕бл╕отеки для розробки програм з використанням libghttp.
+%description static -l uk.UTF-8
+п║я┌п╟я┌п╦я┤п╫я√ п╠я√п╠п╩я√п╬я┌п╣п╨п╦ п╢п╩я▐ я─п╬п╥я─п╬п╠п╨п╦ п©я─п╬пЁя─п╟п╪ п╥ п╡п╦п╨п╬я─п╦я│я┌п╟п╫п╫я▐п╪ libghttp.
 
 %prep
 %setup -q
