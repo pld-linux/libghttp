@@ -1,10 +1,10 @@
 Summary:	GNOME HTTP client library
-Summary(es.UTF-8):   Biblioteca cliente HTTP del GNOME
-Summary(ko.UTF-8):   GNOME HTTP 클라이언트 라이브러리
-Summary(pl.UTF-8):   Biblioteka funkcji klienta HTTP
-Summary(pt_BR.UTF-8):   Biblioteca cliente para HTTP do GNOME
-Summary(ru.UTF-8):   Библиотека HTTP-клиента для GNOME
-Summary(uk.UTF-8):   Бібліотека HTTP-клієнта для GNOME
+Summary(es.UTF-8):	Biblioteca cliente HTTP del GNOME
+Summary(ko.UTF-8):	GNOME HTTP 클라이언트 라이브러리
+Summary(pl.UTF-8):	Biblioteka funkcji klienta HTTP
+Summary(pt_BR.UTF-8):	Biblioteca cliente para HTTP do GNOME
+Summary(ru.UTF-8):	Библиотека HTTP-клиента для GNOME
+Summary(uk.UTF-8):	Бібліотека HTTP-клієнта для GNOME
 Name:		libghttp
 Version:	1.0.9
 Release:	10
@@ -43,12 +43,12 @@ Biblioteca cliente para HTTP 1.1 do GNOME.
 
 %package devel
 Summary:	GNOME HTTP client development
-Summary(es.UTF-8):   Biblioteca cliente HTTP 1.1 del GNOME - desarrollo
-Summary(ko.UTF-8):   GNOME HTTP 클라이언트 개발에 필요한 라이브러리와 헤더 파일
-Summary(pl.UTF-8):   Biblioteki i pliki nagłówkowe libghttp
-Summary(pt_BR.UTF-8):   Componentes para desenvolvimento com o cliente HTTP do GNOME.
-Summary(ru.UTF-8):   Разработка HTTP-клиентов под GNOME
-Summary(uk.UTF-8):   Розробка HTTP-клієнтів під GNOME
+Summary(es.UTF-8):	Biblioteca cliente HTTP 1.1 del GNOME - desarrollo
+Summary(ko.UTF-8):	GNOME HTTP 클라이언트 개발에 필요한 라이브러리와 헤더 파일
+Summary(pl.UTF-8):	Biblioteki i pliki nagłówkowe libghttp
+Summary(pt_BR.UTF-8):	Componentes para desenvolvimento com o cliente HTTP do GNOME.
+Summary(ru.UTF-8):	Разработка HTTP-клиентов под GNOME
+Summary(uk.UTF-8):	Розробка HTTP-клієнтів під GNOME
 Group:		Development/Libraries
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -73,10 +73,10 @@ Componentes para desenvolvimento com o cliente HTTP do GNOME.
 
 %package static
 Summary:	GNOME HTTP client static library
-Summary(pl.UTF-8):   Statyczna biblioteka libghttp
-Summary(pt_BR.UTF-8):   Bibliotecas estáticas para desenvolvimento com libghttp
-Summary(ru.UTF-8):   Разработка HTTP-клиентов под GNOME - статические библиотеки
-Summary(uk.UTF-8):   Розробка HTTP-клієнтів під GNOME - статичні бібліотеки
+Summary(pl.UTF-8):	Statyczna biblioteka libghttp
+Summary(pt_BR.UTF-8):	Bibliotecas estáticas para desenvolvimento com libghttp
+Summary(ru.UTF-8):	Разработка HTTP-клиентов под GNOME - статические библиотеки
+Summary(uk.UTF-8):	Розробка HTTP-клієнтів під GNOME - статичні бібліотеки
 Group:		X11/Development/Libraries
 Requires:	%{name}-devel = %{epoch}:%{version}-%{release}
 Requires:	openssl-devel
