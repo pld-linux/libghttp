@@ -486,7 +486,7 @@ diff -Nur libghttp-1.0.9/http_trans.c gnome-http/http_trans.c
 +      {
 +        /* initialize OpenSSL */
 +        SSLeay_add_ssl_algorithms();
-+        ssl_method = SSLv2_client_method();    
++        ssl_method = SSLv23_client_method();    
 +        SSL_load_error_strings();
 +        ssl_context = SSL_CTX_new(ssl_method);
 +        if(ssl_context == NULL) 
